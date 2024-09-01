@@ -1,2 +1,3 @@
 .venv
 tasklist.db
+__pycache__
