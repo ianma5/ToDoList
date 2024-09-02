@@ -5,7 +5,7 @@ import database
 from tkcalendar import DateEntry
 from datetime import datetime
 
-'''Add editing name feature, sync to calendar? display date created/due, fix incrementing? add due date feature'''
+'''Add editing name feature, sync to calendar?, fix incrementing? fix up due date feature, add customization settings'''
 
 class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, textbox, date_picker, **kwargs):
@@ -15,7 +15,6 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         self.labels = []
 
         self.textbox = textbox # reference to textbox
-        
         #self.sidelabel = sidelabel # title above textbox
         self.date_picker = date_picker
         self.load_tasks()
@@ -34,9 +33,8 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
             task_text = self.textbox.get(0.0,'end').strip()
             if task_text: # check if there are any characters
                 date_created = datetime.now().strftime("%m-%d-%y %I:%M %p")
-                date_due = self.date_picker.get_date().strftime("%m-%d-%y")
-
-                database.create_task(task_text)
+                date_due = self.date_picker.get_date().strftime('%m-%d-%y'+' 11:59 PM')
+                database.create_task(task_text, date_created, date_due)
 
         if task_text: #check the string contains any characters
             tasksamt = len(self.checkboxes) # number of tasks based on amount of items in the checkbox list
@@ -122,11 +120,9 @@ class App(customtkinter.CTk):
         self.sidebar_visible = True
         self.sidebar_frame = SidebarFrame(master=self, width=140, corner_radius=0,sidebar_visible=self.sidebar_visible)
 
-        self.sidebar_frame.grid(row=0,column=0,rowspan=4,sticky="nsew")
+        self.sidebar_frame.grid(row=0,column=0,rowspan=6,sticky="nsew")
         self.sidebar_frame.grid_rowconfigure((0,1,2,3), weight=0)  # Top row (button)
-        self.sidebar_frame.grid_rowconfigure(4, weight=1)
-        self.sidebar_visible = True
-        #self.my_frame = scroll_frame
+        self.sidebar_frame.grid_rowconfigure(4, weight=0)
 
         self.sidebar_frame_label = customtkinter.CTkLabel(self.sidebar_frame,text="Settings")
         self.sidebar_frame_label.grid(row=0, column=0, padx=10, pady=(20,10))
@@ -139,8 +135,8 @@ class App(customtkinter.CTk):
         self.textbox = customtkinter.CTkTextbox(self.sidebar_frame)
         self.textbox.grid(row=4, column=0, padx=10,pady=10,sticky="nsew")
 
-        self.date_picker = DateEntry(self.sidebar_frame, width=12, background='darkblue', foreground='white', borderwidth=2)
-        self.date_picker.grid(row=5, column=0, padx=10, pady=10)
+        self.date_picker = DateEntry(self.sidebar_frame, width=12, background='black', foreground='white', borderwidth=2)
+        self.date_picker.grid(row=6, column=0, padx=10, pady=10, sticky='w')
 
         self.my_frame = ScrollFrame(master=self,label_text="Task List", textbox = self.textbox, date_picker=self.date_picker)
         self.my_frame.grid(row=0,column=1,padx=10,pady=10, sticky='nsew')
@@ -153,7 +149,7 @@ class App(customtkinter.CTk):
 
         self.toggle_button = customtkinter.CTkButton(self, text="☰", width=30, command=self.sidebar_frame.toggle_sidebar)
         self.toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
-          #task list scrollframe
+
         
        
 if __name__== "__main__":

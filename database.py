@@ -22,10 +22,8 @@ def create_table():
     connection.commit()
     connection.close()
     
-def create_task(task):
+def create_task(task, date_created, date_due):
     bool_value = 0
-    date_created = datetime.now().strftime("%m-%d-%y %I:%M %p")
-    date_due = datetime.now().strftime("%m-%d-%y %I:%M %p")
 
     connection = sq.connect("tasklist.db")
     cursor = connection.cursor()
