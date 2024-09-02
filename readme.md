@@ -1,0 +1,1 @@
+A simple, convenient to do list application 100% in python using sqlite3 and customtkinter.

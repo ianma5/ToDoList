@@ -58,9 +58,6 @@ def list_tasks():
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM tasks")
-    #cursor.execute("SELECT rowid, * FROM tasks ORDER BY order_number")
-    #cursor.fetchone()
-    #cusrosr.fetchmany(3)
     tasks = cursor.fetchall()
     for task in tasks:
         print(task)
