@@ -34,7 +34,7 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
             if task_text: # check if there are any characters
                 date_created = datetime.now().strftime("%m-%d-%y %I:%M %p")
                 date_due = self.date_picker.get_date().strftime('%m-%d-%y'+' 11:59 PM')
-                database.create_task(task_text, date_created, date_due)
+                database.create_task(task_text, date_created, date_due, 0)
 
         if task_text: #check the string contains any characters
             tasksamt = len(self.checkboxes) # number of tasks based on amount of items in the checkbox list

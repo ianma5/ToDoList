@@ -3,8 +3,6 @@ sqlite3 database for the todolist
 '''
 import sqlite3 as sq
 
-from datetime import datetime
-
 
 def create_table():
     connection = sq.connect("tasklist.db")
@@ -22,9 +20,7 @@ def create_table():
     connection.commit()
     connection.close()
     
-def create_task(task, date_created, date_due):
-    bool_value = 0
-
+def create_task(task, date_created, date_due, bool_value):
     connection = sq.connect("tasklist.db")
     cursor = connection.cursor()
 
