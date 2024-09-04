@@ -88,8 +88,29 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
 class SidebarFrame(customtkinter.CTkFrame):
     def __init__(self, master, sidebar_visible, **kwargs):
         super().__init__(master, **kwargs)
-       
+
+        #config the sidebar
         self.sidebar_visible = sidebar_visible
+        self.grid(row=0,column=0,rowspan=6,sticky="nsew")
+        self.grid_rowconfigure((0,1,2,3), weight=0)  # Top row (button)
+        self.grid_rowconfigure(4, weight=0)
+
+        #add titles and labels
+        self.sidebar_frame_label = customtkinter.CTkLabel(self,text="Settings")
+        self.sidebar_frame_label.grid(row=0, column=0, padx=10, pady=(20,10))
+
+        self.sidebar_frame_instructions = customtkinter.CTkLabel(self,text="Enter your task:")
+        self.sidebar_frame_instructions.grid(row=3, column=0, padx=10, pady=10)
+        
+        # add the textbox tosidebar
+        self.textbox = customtkinter.CTkTextbox(self)
+        self.textbox.grid(row=4, column=0, padx=10,pady=10,sticky="nsew")
+        
+        #add the date picket
+        self.date_picker = DateEntry(self, width=12, background='black', foreground='white', borderwidth=2)
+        self.date_picker.grid(row=6, column=0, padx=10, pady=10, sticky='w')
+        
+        
     def toggle_sidebar(self):
         if self.sidebar_visible:
             self.grid_remove()  # Hide the sidebar
@@ -114,31 +135,12 @@ class App(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1) # scrollframe column
         self.grid_rowconfigure(0, weight=1) # row for scrollframe
 
-        #side bar configuration
-        #self.sidebar_frame = customtkinter.CTkFrame(self,width=140,corner_radius=0)
-        
+        #create the sidebar frame
         self.sidebar_visible = True
         self.sidebar_frame = SidebarFrame(master=self, width=140, corner_radius=0,sidebar_visible=self.sidebar_visible)
 
-        self.sidebar_frame.grid(row=0,column=0,rowspan=6,sticky="nsew")
-        self.sidebar_frame.grid_rowconfigure((0,1,2,3), weight=0)  # Top row (button)
-        self.sidebar_frame.grid_rowconfigure(4, weight=0)
-
-        self.sidebar_frame_label = customtkinter.CTkLabel(self.sidebar_frame,text="Settings")
-        self.sidebar_frame_label.grid(row=0, column=0, padx=10, pady=(20,10))
-
-        self.sidebar_frame_instructions = customtkinter.CTkLabel(self.sidebar_frame,text="Enter your task:")
-        self.sidebar_frame_instructions.grid(row=3, column=0, padx=10, pady=10)
-
-
-         # add textbox tosidebar
-        self.textbox = customtkinter.CTkTextbox(self.sidebar_frame)
-        self.textbox.grid(row=4, column=0, padx=10,pady=10,sticky="nsew")
-
-        self.date_picker = DateEntry(self.sidebar_frame, width=12, background='black', foreground='white', borderwidth=2)
-        self.date_picker.grid(row=6, column=0, padx=10, pady=10, sticky='w')
-
-        self.my_frame = ScrollFrame(master=self,label_text="Task List", textbox = self.textbox, date_picker=self.date_picker)
+        # the task frame
+        self.my_frame = ScrollFrame(master=self,label_text="Task List", textbox = self.sidebar_frame.textbox, date_picker=self.sidebar_frame.date_picker)
         self.my_frame.grid(row=0,column=1,padx=10,pady=10, sticky='nsew')
 
         self.add_task_button = customtkinter.CTkButton(self.sidebar_frame, text="Add Task",command=self.my_frame.add_checkbox)
@@ -147,8 +149,11 @@ class App(customtkinter.CTk):
         self.remove_task_button = customtkinter.CTkButton(self.sidebar_frame, text="Remove Task",command=self.my_frame.remove_checkbox)
         self.remove_task_button.grid(row=2, column=0, padx=10, pady=10)
 
+        #sidebar toggle button
         self.toggle_button = customtkinter.CTkButton(self, text="☰", width=30, command=self.sidebar_frame.toggle_sidebar)
         self.toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
+
+        #self.sidebar_options_frame = customtkinter.CTkFrame(self,)
 
         
        
