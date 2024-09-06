@@ -92,8 +92,7 @@ class SidebarFrame(customtkinter.CTkFrame):
         #config the sidebar
         self.sidebar_visible = sidebar_visible
         self.grid(row=0,column=0,rowspan=6,sticky="nsew")
-        self.grid_rowconfigure((0,1,2,3), weight=0)  # Top row (button)
-        self.grid_rowconfigure(4, weight=0)
+        self.grid_rowconfigure((0,1,2,3,4), weight=0)  # Top row (button)
 
         #add titles and labels
         self.sidebar_frame_label = customtkinter.CTkLabel(self,text="Settings")
@@ -127,13 +126,13 @@ class App(customtkinter.CTk):
         customtkinter.set_default_color_theme("dark-blue")
         self.geometry("800x580")
         self.title("ToDoList")
-        database.create_table()
+        database.create_table() # initialize table if not already existed
 
         # grid layout configuration
 
         self.grid_columnconfigure(0,weight=0) # sidebar column
         self.grid_columnconfigure(1, weight=1) # scrollframe column
-        self.grid_rowconfigure(0, weight=1) # row for scrollframe
+        #self.grid_rowconfigure(0, weight=1) # row for scrollframe
 
         #create the sidebar frame
         self.sidebar_visible = True
