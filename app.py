@@ -5,7 +5,7 @@ import database
 from tkcalendar import DateEntry
 from datetime import datetime
 
-'''Add editing name feature, sync to calendar?, fix incrementing? fix up due date feature, add customization settings'''
+'''change to get from id rather than tasktext, sync to calendar?, fix up due date feature(time), add customization settings'''
 
 class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, textbox, date_picker, **kwargs):
@@ -16,17 +16,19 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
 
         self.textbox = textbox # reference to textbox
         #self.sidelabel = sidelabel # title above textbox
-        self.date_picker = date_picker
+        self.date_picker = date_picker # reference to date selector
         self.load_tasks()
         
     def load_tasks(self):
         tasks = database.list_tasks() # returns the tasks
         for task in tasks:
+            task_id = task[0]
+            task_text = task[1]
             date_created = task[2]
             date_due = task[3]
             checked_variable = task[4]
 
-            self.add_checkbox(task_text=task[1], checked_variable=checked_variable, date_created = date_created, date_due=date_due) # adds pre-existing tasks from the database
+            self.add_checkbox(task_text, checked_variable=checked_variable, date_created = date_created, date_due=date_due) # adds pre-existing tasks from the database
 
     def add_checkbox(self, task_text=None, checked_variable=False, date_due = None,date_created=None):
         if task_text is None: # Check if this variable is passed, otherwise get from the textbox and pass to the database
@@ -77,6 +79,19 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
             label.destroy()
 
             self.checkboxes.pop(taken_index)
+    
+    def edit_checkbox(self):
+        new_text = self.textbox.get(0.0,'end').strip()
+        if len(new_text)==0: return
+        boxes = self.get()
+        if len(boxes)>1:
+            return
+        elif len(boxes)==1:
+            old_task = boxes[0].cget('text')
+            old_status = boxes[0].get()
+            boxes[0].configure(self, text=new_text, command=lambda: self.mark_box(new_text,boxes[0].get()))
+            self.textbox.delete("1.0", 'end')
+            database.update_task(new_text, old_task)
             
 
     def mark_box(self, task_name, checked):
@@ -97,7 +112,7 @@ class SidebarFrame(customtkinter.CTkFrame):
         self.sidebar_visible = sidebar_visible
         self.grid(row=0,column=0,rowspan=6,sticky="nsew")
         self.grid_columnconfigure(0,weight=1)
-        self.grid_rowconfigure((0,1,2,3,4), weight=0)  # Top row (button)
+        self.grid_rowconfigure((0,1,2,3,4), weight=0) # Row config
 
         #add titles and labels
         #self.sidebar_frame_label = customtkinter.CTkLabel(self,text="Settings")
@@ -131,7 +146,7 @@ class App(customtkinter.CTk):
         customtkinter.set_default_color_theme("dark-blue")
         self.geometry("800x580")
         self.title("ToDoList")
-        database.create_table() # initialize table if not already existed
+        database.create_table() # Initialize table if not already created
 
         # grid layout configuration
 
@@ -152,6 +167,9 @@ class App(customtkinter.CTk):
 
         self.remove_task_button = customtkinter.CTkButton(self.sidebar_frame, text="Remove Task",command=self.my_frame.remove_checkbox)
         self.remove_task_button.grid(row=5, column=0, padx=10, pady=10)
+
+        self.edit_task_button = customtkinter.CTkButton(self.sidebar_frame, text="Edit Task",command=self.my_frame.edit_checkbox)
+        self.edit_task_button.grid(row=6, column=0, padx=10, pady=10)
 
         #sidebar toggle button
         self.toggle_button = customtkinter.CTkButton(self, text="☰", width=30, command=self.sidebar_frame.toggle_sidebar)

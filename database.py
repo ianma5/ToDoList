@@ -47,6 +47,16 @@ def mark_task(task_name, bool):
     connection.commit()
     connection.close()
 
+def update_task(new_text, task_name):
+    connection = sq.connect("tasklist.db")
+    cursor = connection.cursor()
+
+    cursor.execute("UPDATE tasks SET task_name = (?) WHERE task_name = (?)",(new_text,task_name))
+
+    connection.commit()
+    connection.close()
+                
+
 def list_tasks():
     connection = sq.connect("tasklist.db")
     cursor = connection.cursor()
