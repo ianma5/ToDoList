@@ -28,9 +28,9 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
             date_due = task[3]
             checked_variable = task[4]
 
-            self.add_checkbox(task_text, checked_variable=checked_variable, date_created = date_created, date_due=date_due) # adds pre-existing tasks from the database
+            self.add_checkbox(task_text, checked_variable=checked_variable, date_created = date_created, date_due=date_due, task_id=task_id) # adds pre-existing tasks from the database
 
-    def add_checkbox(self, task_text=None, checked_variable=False, date_due = None,date_created=None):
+    def add_checkbox(self, task_text=None, checked_variable=False, date_due = None,date_created=None, task_id=None):
         if task_text is None: # Check if this variable is passed, otherwise get from the textbox and pass to the database
             task_text = self.textbox.get(0.0,'end').strip()
             if task_text: # check if there are any characters
@@ -175,7 +175,6 @@ class App(customtkinter.CTk):
         self.toggle_button = customtkinter.CTkButton(self, text="☰", width=30, command=self.sidebar_frame.toggle_sidebar)
         self.toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
-        #self.sidebar_options_frame = customtkinter.CTkFrame(self,)
 
 
         
