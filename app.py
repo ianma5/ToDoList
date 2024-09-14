@@ -1,11 +1,11 @@
-'''Central code for the todolist.'''
+'''App code for the todolist'''
 
 import customtkinter
 import database
 from tkcalendar import DateEntry
 from datetime import datetime
 
-'''change to get from id rather than tasktext, sync to calendar?, fix up due date feature(time), add customization settings'''
+'''sync to calendar?, fix up due date feature(time), add customization settings'''
 
 class ScrollFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, textbox, date_picker, **kwargs):
@@ -125,7 +125,7 @@ class SidebarFrame(customtkinter.CTkFrame):
         self.textbox = customtkinter.CTkTextbox(self)
         self.textbox.grid(row=2, column=0, padx=10,pady=10,sticky="nsew")
         
-        #add the date picket
+        #add the date picker
         self.date_picker = DateEntry(self, width=12, background='black', foreground='white', borderwidth=2)
         self.date_picker.grid(row=3, column=0, padx=20, pady=10, sticky='ew')
         
@@ -142,7 +142,7 @@ class SidebarFrame(customtkinter.CTkFrame):
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        customtkinter.set_appearance_mode("System")
+        customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
         self.geometry("800x580")
         self.title("ToDoList")
@@ -175,10 +175,7 @@ class App(customtkinter.CTk):
         self.toggle_button = customtkinter.CTkButton(self, text="☰", width=30, command=self.sidebar_frame.toggle_sidebar)
         self.toggle_button.grid(row=0, column=0, padx=5, pady=5, sticky="nw")
 
-
-
-        
-       
+#Run the application
 if __name__== "__main__":
     app = App()
     app.mainloop()
