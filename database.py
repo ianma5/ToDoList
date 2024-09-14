@@ -29,29 +29,29 @@ def create_task(task, date_created, date_due, bool_value):
     connection.close()
 
 
-def delete_task(task_name):
+def delete_task(task_id):
     connection = sq.connect("tasklist.db")
     cursor = connection.cursor()
     
-    cursor.execute("DELETE FROM tasks WHERE task_name = (?)",(task_name,))
+    cursor.execute("DELETE FROM tasks WHERE id = (?)",(task_id,))
 
     connection.commit()
     connection.close()
 
-def mark_task(task_name, bool):
+def mark_task(task_id, bool):
     connection = sq.connect("tasklist.db")
     cursor = connection.cursor()
 
-    cursor.execute("UPDATE tasks SET completed_status = (?) WHERE task_name = (?)",(bool,task_name))
+    cursor.execute("UPDATE tasks SET completed_status = (?) WHERE id = (?)",(bool,task_id))
 
     connection.commit()
     connection.close()
 
-def update_task(new_text, task_name):
+def update_task(new_text, task_id):
     connection = sq.connect("tasklist.db")
     cursor = connection.cursor()
 
-    cursor.execute("UPDATE tasks SET task_name = (?) WHERE task_name = (?)",(new_text,task_name))
+    cursor.execute("UPDATE tasks SET task_name = (?) WHERE id = (?)",(new_text,task_id))
 
     connection.commit()
     connection.close()

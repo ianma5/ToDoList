@@ -45,13 +45,13 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         if task_text: #check the string contains any characters
             tasksamt = len(self.checkboxes) # number of tasks based on amount of items in the checkbox list
 
-            frame = customtkinter.CTkCheckBox(self, text=task_text, command=lambda: self.mark_box(task_text,frame.get())) # create a checkbox for the task
+            frame = customtkinter.CTkCheckBox(self, text=task_text, command=lambda: self.mark_box(task_id,frame.get())) # create a checkbox for the task
 
             # if the task is marked as completed, select the checkbox
             if checked_variable: frame.select()
 
             frame.grid(row=tasksamt+1,column=0,padx=10,pady=10, sticky='w')
-            self.checkboxes.append(frame)
+            self.checkboxes.append((task_id, frame))
             self.textbox.delete("1.0", 'end')
 
             # create a label for the time task was created and append it to list of labels    
@@ -68,9 +68,10 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
     def remove_checkbox(self):
         boxes = self.get()
         for box in (boxes):
-            database.delete_task(box.cget('text'))
-            taken_index = self.checkboxes.index(box)
-            box.destroy()
+            task_id, checkbox = box
+            database.delete_task(task_id)
+            taken_index = self.checkboxes.index((task_id,checkbox))
+            checkbox.destroy()
             #print(taken_index)
             label = self.labels.pop(taken_index*2)
             label.destroy()
@@ -87,21 +88,20 @@ class ScrollFrame(customtkinter.CTkScrollableFrame):
         if len(boxes)>1:
             return
         elif len(boxes)==1:
-            old_task = boxes[0].cget('text')
-            old_status = boxes[0].get()
-            boxes[0].configure(self, text=new_text, command=lambda: self.mark_box(new_text,boxes[0].get()))
+            task_id, checkbox = boxes[0]
+            checkbox.configure(self, text=new_text, command=lambda: self.mark_box(task_id, checkbox.get()))
             self.textbox.delete("1.0", 'end')
-            database.update_task(new_text, old_task)
+            database.update_task(new_text, task_id)
             
 
-    def mark_box(self, task_name, checked):
-        database.mark_task(task_name, checked)
+    def mark_box(self, task_id, checked):
+        database.mark_task(task_id, checked)
 
     def get(self):
         checked_checkboxes = []
-        for checkbox in self.checkboxes:
+        for task_id, checkbox in self.checkboxes:
             if checkbox.get() == 1: # its checked
-                checked_checkboxes.append(checkbox)
+                checked_checkboxes.append((task_id, checkbox))
         return checked_checkboxes
 
 class SidebarFrame(customtkinter.CTkFrame):
