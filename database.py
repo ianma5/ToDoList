@@ -63,9 +63,7 @@ def list_tasks():
 
     cursor.execute("SELECT * FROM tasks")
     tasks = cursor.fetchall()
-    for task in tasks:
-        print(task)
-
+    
     connection.commit()
     connection.close()
     return tasks
